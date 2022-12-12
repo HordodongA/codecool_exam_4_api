@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react"
 // Import Components
 import LoadingMask from "./components/LoadingMask.jsx"
 import Character from "./components/Character.jsx"
+import Subscription from "./components/Subscription.jsx"
 
 
 // API URL
@@ -12,6 +13,10 @@ const App = () => {
 
   // App state
   const [characters, setCharacters] = useState([])
+  // Subscribe state
+  const [isSubscribe, setIsSubscribe] = useState(false)
+
+
 
   // GET data fom API
   const getData = async () => {
@@ -19,8 +24,6 @@ const App = () => {
     try {
       const responseJson = await fetch(apiUrl)
       const responseObject = responseJson.json()
-      console.log(responseJson)
-      console.log(responseObject)
       return responseObject
     }
     catch (error) {
@@ -33,14 +36,25 @@ const App = () => {
   const initPage = async () => {
     const apiData = await getData()
     setCharacters(apiData)
-    console.log(apiData)
-    // console.log(characters)
   }
 
   // Kick in window:onLoad
   useEffect(() => {
     initPage()
+    subscriptionReleaseHandler()
   }, [])
+
+  // Subscription releaser
+
+  const sleep = (ms) => new Promise((resolve, reject) => setTimeout(() => {
+    resolve()
+    setIsSubscribe(true)
+  }
+    , ms))    // a lenti fc hívja meg
+
+  const subscriptionReleaseHandler = async () => {
+    await sleep(10000)
+  }
 
   return (
     <div>
@@ -48,18 +62,26 @@ const App = () => {
       {characters.length === 0 &&
         <LoadingMask />
       }
+
       <section>
-        <h2>Characters</h2>
+        {characters.length !== 0 &&
+          <h2>Characters</h2>
+        }
         {characters.length !== 0 &&
           characters.map(character => (character &&
             <Character
-            key={character.name} 
-            character={character}
+              key={character.name}
+              character={character}
             />
 
           ))}
       </section>
 
+      <section>
+        {isSubscribe &&
+          <Subscription />
+        }
+      </section>
 
     </div>
   )

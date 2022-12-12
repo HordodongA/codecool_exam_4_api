@@ -2,9 +2,6 @@ import { useState } from "react"
 
 
 const Character = (character) => {
-    console.log(character)
-    console.log(character.character.name)
-    console.log(character.character.details)
 
     const [showMore, setShowMore] = useState("false")
     const [buttonText, setButtonText] = useState("Show more")
